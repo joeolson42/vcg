@@ -3,11 +3,11 @@
 ## A slick tool to generate sigma/height coordinates for use in numerical weather prediction models. This tool allows for:
 
 1. the specification of lowest model level height.
-2. number of layers in a stable boundary layer and a linear
-3. number of layers in the between the boundary layer top and the lower stratosphere
-4. number of layers at very high levels (𝜎 < 0.1) for the gravity wave sponge layer and for satellite radiance data assimilation (not yet mature)
+2. number of layers in a stable boundary layer (specified with a linear increase in dz with height)
+3. approximate number of layers in the between the boundary layer top and the lower stratosphere
+4. number of layers at very high levels (𝜎 < 0.1) for the gravity wave sponge layer and for satellite radiance data assimilation (not yet mature--it works but the type of blending needs to be improved. For now, I suggest making *nsig_cos* large if you want a lot of layers in the stratosphere.)
 5. has the capability to allow for skewing the density of levels to lower or upper levels, if desired.
-6. can output both sigma and height coordinates (for WRF and MPAS)
+6. can output both sigma and height coordinates (for WRF and MPAS, respectively)
 
 Depending which compiler you use, compile as:
 * ifort -o vcg vcg.f90
