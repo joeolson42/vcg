@@ -1,0 +1,9 @@
+&vcg_config
+  sig1       = 0.9977       !first sigma level above the surface (top of first model layer)
+  nsig_cos   = 58           !number of layers in the analytical (cosine) sigma levels
+  nsig_pbl   = 4            !number of layers within the stable pbl (0 to z_spbl)
+  z_spbl     = 120.         !height of typical stable pbl (meters)
+  nsig_p1    = 8            !minimum number of layers above sigma = 0.1
+  alfa1      = 1.0          !skewness factor
+  ptop       = 200.         !pressure top (Pa)
+/
