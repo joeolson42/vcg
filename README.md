@@ -18,10 +18,10 @@ etc, then simply execute the program, i.e., “./vcg”
 But before you run the program, edit the namelist *vcg.nml*. For example:
 
 * sig1       = 0.9977  !first sigma level above the surface (top of first model layer)
-* nsig_cos   = 63      !number of layers in the analytical (cosine) sigma levels
-* nsig_pbl   = 10      !number of layers within the stable pbl (from z=0 to z_spbl meters)
-* z_spbl     = 300.    !height of stable boundary ayer (meters)
-* nsig_p1    = 12      !minimum number of layers above 𝜎 = 0.1
+* nsig_cos   = 66      !number of layers in the analytical (cosine) sigma levels
+* nsig_pbl   = 7        !number of layers within the stable pbl (from z=0 to z_spbl meters)
+* z_spbl     = 210.    !height of stable boundary ayer (meters)
+* nsig_p1    = 9        !minimum number of layers above 𝜎 = 0.1
 * alfa1      = 1.0      !skewness factor (> 1 increases clustering near the surface; <1
 * ptop       = 100.0    !model pressure top (Pascals), needed for the 𝜎-to-z transformation
 
