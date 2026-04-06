@@ -28,6 +28,7 @@ program vertical_coordinate_generator
   real(dp):: sig1        !top pf lowest model layer (suggest: 0.998-0.997)
   real(dp):: alfa1       !alfa1 > 1 increases clustering near the surface; alfa1 < 1 increases clustering near the top
   real(dp):: ptop        !pressure (Pa) at model top, needed for sigma to z conversion
+  real(dp):: ddelz_max   !maximum delta(delta-z) for poor vertical resolution and/or high ptop (suggest: 300 m)
   
   !derived variables
   real(dp):: dsig1       ! 1.0 - sig1
@@ -55,14 +56,15 @@ program vertical_coordinate_generator
   real(dp),dimension(1:500):: tv_mean      !mean virtual temperature profile (K)
   real(dp),dimension(1:500):: p            !pressure profile (Pa)
   real(dp),dimension(1:500):: z            !height (m)
-
+  real(dp),dimension(1:500):: delz
+  
   !miscellaneous
-  real(dp):: pi,delta,x,dsig,wt,wt_int
-  integer :: k,k3,ks,ki,nlevs_top,k_high,nz
+  real(dp):: pi,delta,x,dsig,wt,wt_int,rsig,ddelz,ddelz0,ddelz1
+  integer :: k,k3,ks,ki,nlevs_top,k_high,nz,limit_ddelz,nddelz,kddelz
   logical,parameter::verbose=.false.       !extra output for debugging
   
  ! Define namelist group
-  namelist /vcg_config/ sig1, nsig_cos, nsig_pbl, z_spbl, nsig_p1, alfa1, ptop
+  namelist /vcg_config/ sig1, nsig_cos, nsig_pbl, z_spbl, nsig_p1, alfa1, ptop, ddelz_max
 
   pi         = 4.0_dp * atan(1.0_dp)
 
@@ -70,10 +72,12 @@ program vertical_coordinate_generator
   sig1       = 0.9975_dp    !first sigma level above the surface (top of first model layer)
   nsig_cos   = 65           !number of layers in the analytical (cosine) sigma levels
   nsig_pbl   = 10           !number of layers within the stable pbl (0 to z_spbl)
-  z_spbl     = 300._dp      !meters
+  z_spbl     = 300._dp      !height of stable boundary layer (meters)
   nsig_p1    = 12           !minimum number of layers above sigma = 0.05
   alfa1      = 1.0_dp       !skewness factor
-
+  ptop       = 200.         !pressure at model top (Pascals)
+  ddelz_max  = 300.         !maximum allowable increase in delta-z (meters)
+  
   ! Open and read namelist file
   open(unit=10, file='vcg.nml', status='old', action='read')
   read(10, nml=vcg_config)
@@ -177,8 +181,12 @@ program vertical_coordinate_generator
      
      if (sigma(k) <= 0.0_dp) then
         sigma(k)    = 0.0_dp
-        dsigma(k-1) = sigma(k-1)
         dsigma(k)   = 0.0_dp
+        !even out spacing for the top two sigma layers
+        rsig        = dsigma(k-3) / (dsigma(k-3) + dsigma(k-2))
+        dsigma(k-2) = sigma(k-2) * rsig
+        dsigma(k-1) = sigma(k-2) * (1._dp - rsig)
+        sigma(k-1)  = sigma(k-2) - dsigma(k-2)
         k3 = k
         exit
      endif
@@ -244,14 +252,42 @@ program vertical_coordinate_generator
   ! Define dummy mean virtual temperatures for the column [K]
   nz = max(nsig_cos+1,k3)
   do k = 1, nz
-     !tv_mean(k) = 290.0_dp - 60.0_dp*min(1.0_dp, max(0.0_dp, 1.0_dp - sigma(k))/0.9_dp) &
-     !     + 10.0_dp*min(1.0_dp, max(0.0_dp, 0.1_dp - sigma(k))/0.1_dp)
      tv_mean(k) = (724.0_dp - 40.0_dp*sigma(k) + 241.0_dp*((sigma(k)-0.1)**2 + 0.0004_dp))/3.0_dp
   enddo
        
   ! Call the conversion subroutine
   call calc_height_from_sigma(nz, sigma(1:nz), psfc, ptop, zsfc, tv_mean(1:nz), p(1:nz), z(1:nz))  
 
+  !----------------------------------------------------------------------
+  ! perform check on d(delz) to limit excessive growth if it surpasses 300 m
+  !----------------------------------------------------------------------
+  delz(1) = 0._dp
+  limit_ddelz = 0
+  nddelz = 0
+  do k = 2, nz
+     delz(k) = z(k) - z(k-1)
+     ddelz   = delz(k) - delz(k-1)
+     if ((ddelz > ddelz_max) .and. (limit_ddelz == 0) .and. (k .ne. nz)) then
+        limit_ddelz = 1
+        ddelz0 = delz(k-1) - delz(k-2)
+        ddelz1 = delz(k)   - delz(k-1)
+        kddelz = k
+        print*,"Warning: large increase in delta-z is detected."
+        print*,"--recommend increasing nsig_cos and/or reducing ptop."
+        print'(I4,3F12.6)',k-1,z(k-1),delz(k-1),ddelz0
+     endif
+     !impose limit for all levels above the first levels that pierces the limit
+     if (limit_ddelz == 1) then
+        nddelz = nddelz + 1
+        ddelz  = ddelz0 + (ddelz1 - ddelz0) * (1._dp - 1._dp/(1._dp + real(nddelz,dp)))
+     endif
+     delz(k) = delz(k-1) + ddelz
+     z(k)    = z(k-1) + delz(k)
+     if (limit_ddelz .gt. 0) then
+        print'(I4,3F12.6)',k,z(k),delz(k),ddelz
+     endif
+  enddo
+  
   !----------------------------------------------------------------------
   ! Output results
   !----------------------------------------------------------------------
@@ -268,15 +304,20 @@ program vertical_coordinate_generator
   print*
   print*,"sigma:"
   do k = 1, nz
-     !one at a time for google sheets
      print '(F15.8)',sigma(k)
   end do
   print*
+  print*,"sigma for WRF:"
+  do k = 1, nz-1
+     write(*,'(F11.8,A1)',advance='NO' ),sigma(k),","
+  end do
+  write(*,'(F11.8,A1)'),sigma(k),","
+  print*
   print*,"delta-sigma:"
   do k = 1, nz
-     !one at a time for google sheets
      print '(F15.8)',dsigma(k)
   end do
+  print*
   print*,"height"
   do k = 1, nz
      print '(F15.6)',z(k)

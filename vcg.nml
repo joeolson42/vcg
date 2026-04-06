@@ -4,6 +4,7 @@
   nsig_pbl   = 4            !number of layers within the stable pbl (0 to z_spbl)
   z_spbl     = 120.         !height of typical stable pbl (meters)
   nsig_p1    = 8            !minimum number of layers above sigma = 0.1
-  alfa1      = 1.0          !skewness factor
-  ptop       = 200.         !pressure top (Pa)
+  alfa1      = 1.0          !skewness factor (unitless)
+  ptop       = 200.         !pressure at model top (Pa)
+  ddelz_max  = 300.         !maximum increase in delta-z (meters)
 /
