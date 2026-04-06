@@ -17,14 +17,14 @@ etc, then simply execute the program, i.e., “./vcg”
 
 But before you run the program, edit the namelist *vcg.nml*. For example:
 
-* sig1       = 0.9977  !first sigma level above the surface (top of first model layer)
-* nsig_cos   = 66      !number of layers in the analytical (cosine) sigma levels
-* nsig_pbl   = 7        !number of layers within the stable pbl (from z=0 to z_spbl meters)
-* z_spbl     = 210.    !height of stable boundary ayer (meters)
-* nsig_p1    = 9        !minimum number of layers above 𝜎 = 0.1
-* alfa1      = 1.0      !skewness factor (> 1 increases clustering near the surface; <1
-* ptop       = 200.0    !model pressure top (Pascals), needed for the 𝜎-to-z transformation
-* ddelz_max  = 300.     !maximum allowable increase in delta-z (meters)
+* sig1       = 0.9977  ${\color{red}!first\space sigma\space level\space above\space the\space surface\space (top\space of\space first\space model\space layer)}$
+* nsig_cos   = 66      ${\color{red}!number\space of\space layers\space in\space the\space analytical\space (cosine)\space sigma\space levels}$
+* nsig_pbl   = 7        ${\color{red}!number\space of\space layers\space within\space the\space stable\space pbl\space (from\space z=0\space to\space zpbl,\space  meters)}$
+* z_spbl     = 210.    ${\color{red}!height\space of\space stable\space boundary\space layer\space (meters)}$
+* nsig_p1    = 9        ${\color{red}!minimum\space number\space of\space layers\space above\space 𝜎 = 0.1}$
+* alfa1      = 1.0      ${\color{red}!skewness factor (> 1 increases clustering near the surface; <1}$
+* ptop       = 200.0    ${\color{red}!model\space pressure\space top\space (Pascals),\space needed\space for\space the\space 𝜎-to-z\space transformation}$
+* ddelz_max  = 300.     ${\color{red}!maximum\space allowable\space increase\space in\space delta-z\space (meters)}$
 
 With this flexibility, users have the potential to do both good and harm. Please refer to some of the literature for scientific guidance and use this tool wisely.
 
