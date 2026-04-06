@@ -22,7 +22,7 @@ But before you run the program, edit the namelist *vcg.nml*. For example:
 * nsig_pbl   = 7        ${\color{red}!number\space of\space layers\space within\space the\space stable\space pbl\space (from\space z=0\space to\space zpbl,\space  meters)}$
 * z_spbl     = 210.    ${\color{red}!height\space of\space stable\space boundary\space layer\space (meters)}$
 * nsig_p1    = 9        ${\color{red}!minimum\space number\space of\space layers\space above\space 𝜎 = 0.1}$
-* alfa1      = 1.0      ${\color{red}!skewness factor (> 1 increases clustering near the surface; <1}$
+* alfa1      = 1.0      ${\color{red}!skewness\space factor\space (> 1\space increases\space clustering\space near\space the\space surface; <1\space increases\space clustering\space aloft}$
 * ptop       = 200.0    ${\color{red}!model\space pressure\space top\space (Pascals),\space needed\space for\space the\space 𝜎-to-z\space transformation}$
 * ddelz_max  = 300.     ${\color{red}!maximum\space allowable\space increase\space in\space delta-z\space (meters)}$
 
