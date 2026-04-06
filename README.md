@@ -23,7 +23,8 @@ But before you run the program, edit the namelist *vcg.nml*. For example:
 * z_spbl     = 210.    !height of stable boundary ayer (meters)
 * nsig_p1    = 9        !minimum number of layers above 𝜎 = 0.1
 * alfa1      = 1.0      !skewness factor (> 1 increases clustering near the surface; <1
-* ptop       = 100.0    !model pressure top (Pascals), needed for the 𝜎-to-z transformation
+* ptop       = 200.0    !model pressure top (Pascals), needed for the 𝜎-to-z transformation
+* ddelz_max  = 300.     !maximum allowable increase in delta-z (meters)
 
 With this flexibility, users have the potential to do both good and harm. Please refer to some of the literature for scientific guidance and use this tool wisely.
 
