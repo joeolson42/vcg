@@ -9,7 +9,7 @@
 5. has the capability to allow for skewing the density of levels to lower or upper levels, if desired.
 6. can output both sigma and height coordinates (for WRF and MPAS, respectively)
 
-Depending which compiler you use, compile as:
+Depending on which compiler you use, compile as:
 * ifort -o vcg vcg.f90
 * ifx -o vcg vcg.f90
 
