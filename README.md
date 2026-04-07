@@ -26,5 +26,7 @@ But before you run the program, edit the namelist *vcg.nml*. For example:
 * ptop       = 200.0    ${\color{red}!model\space pressure\space top\space (Pascals),\space needed\space for\space the\space 𝜎-to-z\space transformation}$
 * ddelz_max  = 300.     ${\color{red}!maximum\space allowable\space increase\space in\space delta-z\space (meters)}$
 
+I have not (and can not) fully tested all possible configurations, so I can not guarantee you won't find some irregularities with some configurations. I recommened plotting the ∆𝜎 and ∆(∆𝜎) [or ∆z and ∆(∆z)] to check for irregulaties before you use the profiles in a numerical weather prediction model.
+
 With this flexibility, users have the potential to do both good and harm. Please refer to some of the literature for scientific guidance and use this tool wisely.
 
